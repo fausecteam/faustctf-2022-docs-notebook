@@ -1,0 +1,250 @@
+<html>
+  <head>
+	<title>Doc's Notebook</title>
+	<style>
+	  body {
+		  padding: 0;
+		  margin: 0;
+	  }
+
+	  h1 {
+		  text-align: center;
+	  }
+
+	  #header {
+		  color: white;
+		  background: #333;
+		  display: flex;
+		  align-items: center;
+		  padding: 10px 0 10px 10px;
+	  }
+
+	  #header a {
+		  color: white;
+		  margin: 0 10px;
+	  }
+
+	  #title {
+		  font-size: 2em;
+		  flex-grow: 1;
+	  }
+
+	  #title a {
+		  text-decoration: none;
+	  }
+
+	  #content {
+		  padding-left: 10px;
+		  width: 800px;
+		  margin: 0 auto;
+	  }
+
+	  h2 {
+		  text-align: center;
+	  }
+	</style>
+  </head>
+  <body>
+	<div id="header">
+	  <div id="title">
+		<a href="/">
+		  Doc's Notebook
+		</a>
+	  </div>
+	  <div id="actions">
+		<a href="/login">Login</a>
+		<a href="/register">Register</a>
+	  </div>
+	</div>
+	<div id="content">
+	  <h2>
+		Welcome to Doc's Notebook!
+	  </h2>
+
+	  <p>
+		Home for all your great research powered by the wonderful <a href="https://orgmode.org">Org Syntax</a>!
+	  </p>
+
+	  <p>
+		This Service is written in <a href="https://en.wikipedia.org/wiki/Emacs_Lisp"> Emacs Lisp </a>. This makes Doc's Notebook easily portable through most of recent time, as GNU Emacs appeared as early as 1985.
+	  </p>
+
+	  <p>
+		However, it is advised you travel to a year past 1995 to obtain a web browser with javascript engine.
+	  </p>
+
+	  <h2 style="margin-top: 200px;"> Brief Syntax Introduction </h>
+
+	  <h2 id="org04bfb6f"><span class="section-number-2">1</span> Preamble</h2>
+	  <div class="outline-text-2" id="text-1">
+		<p>
+		  You can set the title of your document with the <code>#+TITLE:</code> directive and the author via <code>#+AUTHOR:</code>.
+		</p>
+
+		<p>
+		  Furthermore, you can change export settings with <code>#+OPTIONS:</code>
+		</p>
+
+		<p>
+		  These options may be useful:
+		</p>
+		<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+		  <colgroup>
+			<col  class="org-left" />
+
+			<col  class="org-left" />
+
+			<col  class="org-left" />
+		  </colgroup>
+		  <thead>
+			<tr>
+			  <th scope="col" class="org-left">Option</th>
+			  <th scope="col" class="org-left">Description</th>
+			  <th scope="col" class="org-left">Example</th>
+			</tr>
+		  </thead>
+		  <tbody>
+			<tr>
+			  <td class="org-left">toc</td>
+			  <td class="org-left">Generate a Table of Contents</td>
+			  <td class="org-left">toc:nil</td>
+			</tr>
+
+			<tr>
+			  <td class="org-left">num</td>
+			  <td class="org-left">How many headlines to number</td>
+			  <td class="org-left">num:2</td>
+			</tr>
+		  </tbody>
+		</table>
+
+		<p>
+		  For a full list, see: <a href="https://orgmode.org/manual/Export-Settings.html">Export Settings</a>
+		</p>
+
+		<p>
+		  Example:
+		</p>
+		<pre class="example">
+		  <span class="linenr">1: </span>#+TITLE: How to time travel
+		  <span class="linenr">2: </span>#+AUTHOR: Doc Brown
+		  <span class="linenr">3: </span>#+DATE: 1955-11-05
+		</pre>
+	  </div>
+
+	  <div id="outline-container-org67750da" class="outline-2">
+		<h2 id="org67750da"><span class="section-number-2">2</span> Tables</h2>
+		<div class="outline-text-2" id="text-2">
+		  <p>
+			A table cell is delimited by <code>|</code>. A horizontal line in the table is given by <code>|---------|</code>
+		  </p>
+		</div>
+
+		<div id="outline-container-orgc6bb305" class="outline-3">
+		  <h3 id="orgc6bb305"><span class="section-number-3">2.1</span> Table Formulas</h3>
+		  <div class="outline-text-3" id="text-2-1">
+			<p>
+			  Your Table may include a <code>#+TBLFM:</code> line at the end of the table.
+			</p>
+
+			<p>
+			  On this line you can supply multiple table formulas, seperated by <code>::</code>
+			</p>
+
+			<p>
+			  These table formulas will be evaluated on export.
+			</p>
+
+			<p>
+			  Example:
+			</p>
+			<pre class="example">
+			  <span class="linenr">1: </span>|      Item | Price | Amount | Total |
+			  <span class="linenr">2: </span>|-----------+-------+--------+-------|
+			  <span class="linenr">3: </span>| Plutonium |   100 |      5 |       |
+			  <span class="linenr">4: </span>|  Delorean | 80000 |      1 |       |
+			  <span class="linenr">5: </span>|-----------+-------+--------+-------|
+			  <span class="linenr">6: </span>|           |       |        |       |
+			  <span class="linenr">7: </span>#+TBLFM: $4=$2*$3::@&gt;$4=vsum(@2$4..@-1$4)
+			</pre>
+
+			<p>
+			  exports to:
+			</p>
+
+			<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+			  <colgroup>
+				<col  class="org-left" />
+
+				<col  class="org-right" />
+
+				<col  class="org-right" />
+
+				<col  class="org-right" />
+			  </colgroup>
+			  <thead>
+				<tr>
+				  <th scope="col" class="org-left">Item</th>
+				  <th scope="col" class="org-right">Price</th>
+				  <th scope="col" class="org-right">Amount</th>
+				  <th scope="col" class="org-right">Total</th>
+				</tr>
+			  </thead>
+			  <tbody>
+				<tr>
+				  <td class="org-left">Plutonium</td>
+				  <td class="org-right">100</td>
+				  <td class="org-right">5</td>
+				  <td class="org-right">500</td>
+				</tr>
+
+				<tr>
+				  <td class="org-left">Delorean</td>
+				  <td class="org-right">80000</td>
+				  <td class="org-right">1</td>
+				  <td class="org-right">80000</td>
+				</tr>
+			  </tbody>
+			  <tbody>
+				<tr>
+				  <td class="org-left">&#xa0;</td>
+				  <td class="org-right">&#xa0;</td>
+				  <td class="org-right">&#xa0;</td>
+				  <td class="org-right">80500</td>
+				</tr>
+			  </tbody>
+			</table>
+		  </div>
+		</div>
+	  </div>
+
+	  <div id="outline-container-org05ec5da" class="outline-2">
+		<h2 id="org05ec5da"><span class="section-number-2">3</span> Source code blocks</h2>
+		<div class="outline-text-2" id="text-3">
+		  <p>
+			Source code blocks are of the following form:
+		  </p>
+
+		  <pre class="example">
+			<span class="linenr">1: </span>#+begin_src emacs-lisp
+			<span class="linenr">2: </span>(defun foo (x)
+			<span class="linenr">3: </span>  (format "baz: %s" x))
+			<span class="linenr">4: </span>
+			<span class="linenr">5: </span>(foo "bar")
+			<span class="linenr">6: </span>#+end_src
+		  </pre>
+
+		  <p>
+			However, code block evaluation is disabled due to security concerns.
+		  </p>
+
+		  <p>
+			Take a look at the <a href="https://orgmode.org/manual">manual</a> to see all features.
+		  </p>
+		</div>
+  </body>
+</html>

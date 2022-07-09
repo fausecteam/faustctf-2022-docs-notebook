@@ -1,0 +1,89 @@
+<html>
+  <head>
+	<title>Doc's Notebook</title>
+	<style>
+	  body {
+		  background: #333;
+		  display: table;
+		  position: absolute;
+		  top: 0;
+		  left: 0;
+		  height: 100%;
+		  width: 100%;
+		  padding: 0;
+		  margin: 0;
+	  }
+
+	  #outer {
+		  display: table-cell;
+		  vertical-align: middle;
+	  }
+	  
+	  #register {
+		  background: white;
+		  border: 2px solid #888;
+		  border-radius: 5px;
+		  padding: 10px;
+		  width: max-content;
+		  margin: 0 auto;
+		  box-shadow: 2px 2px;
+	  }
+
+	  form {
+		  display: flex;
+		  flex-direction: column;
+		  margin: 50px 0 20px 0;
+	  }
+
+	  h2 {
+		  text-align: center;
+	  }
+
+	  .footnote {
+		  font-size: 0.8em;
+	  }
+
+	  input {
+		  background: #eee;
+		  border-radius: 5px;
+		  border: 1px solid gray;
+		  padding: 5px;
+		  margin-top: 5px;
+	  }
+
+	  input:focus {
+		  background: #fff;
+	  }
+
+	  input[type="submit"] {
+		  background: #0a0;
+		  color: white;
+		  font-weight: bold;
+		  cursor: pointer;
+		  
+		  margin-top: 15px;
+	  }
+
+	  input[type="submit"]:hover, input[type="submit"]:focus {
+		  background: #0c0;
+	  }
+	</style>
+  </head>
+  <body>
+	<div id="outer">
+	  <div id="register">
+		<h2> Register </h2>
+		
+		<form method="post" action="/register">
+		  <input type="text" name="username">
+		  <input type="password" name="password">
+		  <input type="submit" value="Register">
+		</form>
+
+		<p class="footnote">
+		  Already have an account? <a href="/login"> Log In </a> instead
+		</p>
+	  </div>
+	</div>
+  </body>
+</html>

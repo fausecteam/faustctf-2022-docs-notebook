@@ -1,0 +1,32 @@
+version: "2.2"
+# ipv6 is not supported in version 3
+
+services:
+  docsnotebook_deps:
+    scale: 0
+    image: faust.cs.fau.de:5000/docsnotebook_deps
+    build:
+      context: docsnotebook
+      dockerfile: Dockerfile.deps
+  docsnotebook:
+    restart: unless-stopped
+    image: faust.cs.fau.de:5000/docsnotebook
+    init: true
+    build: docsnotebook
+    volumes:
+      - /srv/files
+  docsnotebook_proxy:
+    restart: unless-stopped
+    image: faust.cs.fau.de:5000/docsnotebook_proxy
+    init: true
+    build: proxy
+    ports:
+      - "9000:443/tcp"
+
+networks:
+  default:
+    enable_ipv6: true
+    ipam:
+      driver: default
+      config:
+        - subnet: "fd42:d0ce:1337::/64"

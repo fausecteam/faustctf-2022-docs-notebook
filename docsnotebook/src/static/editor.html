@@ -1,0 +1,316 @@
+<html>
+  <head>
+	<title>Doc's Notebook</title>
+	<style>
+	  body {
+		  width: 100%;
+		  height: 100%;
+		  margin: 0;
+		  padding: 0;
+		  display: flex;
+		  flex-direction: column;
+		  background: #666;
+	  }
+	  
+	  h1 {
+		  text-align: center;
+	  }
+
+	  #header {
+		  color: white;
+		  background: #333;
+		  display: flex;
+		  align-items: center;
+		  padding: 10px 0 10px 10px;
+	  }
+
+	  #header a {
+		  color: white;
+		  margin: 0 10px;
+	  }
+
+	  #title {
+		  font-size: 2em;
+		  flex-grow: 1;
+	  }
+
+	  #title a {
+		  text-decoration: none;
+	  }
+
+	  .content {
+		  display: flex;
+		  flex-grow: 1;
+		  margin: 10px;
+	  }
+
+	  #banner {
+		  position: fixed;
+		  top: 0;
+		  left: 0;
+		  right: 0;
+		  background: #fff;
+	  }
+
+	  #left {
+		  display: flex;
+		  width: 60%;
+	  }
+
+	  #preview {
+		  width: 40%;
+		  display: flex;
+		  flex-direction: column;
+		  margin-top: 25px;
+	  }
+
+	  #render {
+		  flex-grow: 1;
+		  border: none;
+		  background: #baf;
+	  }
+
+	  #editor {
+		  display: flex;
+		  flex-direction: column;
+		  flex-grow: 1;
+		  margin-right: 5px;
+	  }
+
+	  #outersidebar {
+		  display: flex;
+		  flex-direction: column;
+		  margin-top: 20px;
+	  }
+
+	  #sidebar {
+		  width: 250px;
+		  overflow-x: hidden;
+		  text-overflow: ellipsis;
+		  flex-grow: 1;
+	  }
+
+	  button {
+		  cursor: pointer;
+	  }
+
+	  #add {
+		  margin-right: 10px;
+	  }
+
+	  #save {
+		  background: lightgreen;
+		  border: 1px solid black;
+		  border-radius: 5px;
+		  padding: 2px 5px;
+		  color: black;
+	  }
+
+	  #save:hover {
+		  background: #dfd;
+	  }
+
+	  #export {
+		  background: lightblue;
+		  border: 1px solid black;
+		  border-radius: 5px;
+		  padding: 2px 5px;
+		  color: black;
+	  }
+
+	  #export:hover {
+		  background: #ddf;
+	  }
+
+	  textarea {
+		  box-sizing: border-box;
+		  width: 100%;
+		  flex-grow: 1;
+		  resize: none;
+		  font-size: 1.25em;
+		  padding: 5px;
+	  }
+
+	  .controls {
+		  margin-left: auto;
+		  margin-right: 0;
+	  }
+
+	  .orgfile {
+		  cursor: pointer;
+		  margin: 5px 0;
+		  font-weight: bold;
+		  color: #ccc;
+		  padding: 5px;
+		  padding-left: 10px;
+		  overflow-x: hidden;
+		  text-overflow: ellipsis;
+	  }
+
+	  .orgfile.active {
+		  background: #fff;
+		  color: black;
+	  }
+
+	  textarea {
+		  font-family: monospace;
+	  }
+	</style>
+	<script>
+	  async function load_file(file) {
+		  let sidebar = document.querySelector('#sidebar');
+		  if (window.current_file) {
+			  let idx = window.available_files.indexOf(window.current_file);
+			  sidebar.children[idx].classList.remove('active');
+		  }
+		  window.current_file = file;
+		  let idx = window.available_files.indexOf(window.current_file);
+		  sidebar.children[idx].classList.add('active');
+		  await fetch("/edit/" + window.current_file)
+			  .then(response => response.text())
+			  .then(data => document.querySelector('textarea').value = data);
+		  document.querySelector('#render').src = "/export/" + current_file + "#pagemode=none&navpanes=0";
+	  }
+	  
+	  async function save() {
+		  await fetch("/edit/" + window.current_file, {
+			  method: "POST",
+			  body: document.querySelector('textarea').value
+		  });
+	  };
+
+	  async function do_export() {
+		  await fetch("/edit/" + window.current_file, {
+			  method: "POST",
+			  body: document.querySelector('textarea').value
+		  });
+		  
+		  await fetch("/export/" + window.current_file, {
+			  method: "POST",
+		  });
+		  
+		  document.querySelector('#render').src = '/load.svg';
+
+		  setTimeout(function() {
+			  document.querySelector('#render').src = "/export/" + current_file;
+		  }, 1500);
+	  };
+	  
+	  window.onload = async function() {
+		  await fetch("/list")
+			  .then(response => response.json())
+			  .then(data => window.available_files = data);
+
+		  let sidebar = document.querySelector('#sidebar');
+		  for (let idx in window.available_files) {
+			  let file = window.available_files[idx];
+			  let entry = document.createElement('div');
+			  entry.classList.add('orgfile');
+			  entry.innerText = file;
+			  entry.onclick = async function() {
+				  await load_file(file);
+			  };
+			  sidebar.appendChild(entry);
+		  }
+
+		  if (window.available_files.length > 0) {
+			  await load_file(window.available_files[0]);
+			  document.querySelector('textarea').disabled = false;
+		  }
+		  
+		  document.querySelector('#add').onclick = async function() {
+			  let sidebar = document.querySelector('#sidebar');
+			  let file = window.prompt("Name:");
+			  if(file) {
+				  window.available_files.push(file);
+				  let entry = document.createElement('div');
+				  entry.classList.add('orgfile');
+				  entry.innerText = file;
+				  entry.onclick = async function() {
+					  await load_file(file);
+				  };
+				  sidebar.appendChild(entry);
+				  await load_file(file);
+				  document.querySelector('textarea').disabled = false;
+				  document.querySelector('textarea').value =
+`#+TITLE: ${file}
+#+OPTIONS: num:2 toc:nil
+
+Welcome to Doc's Notebook. This service offers a vast amount of features, including:
+
+* Headlines
+** More Headlines
+*** All the headlines
+Rich text in *bold*, /italic/, _underlined_, =verbatim=, ~code~ and +strike-through+
+
+* Tables & Formulas
+|      Item | Price | Amount | Total |
+|-----------+-------+--------+-------|
+| Plutonium |   100 |      5 |       |
+|  Delorean | 80000 |      1 |       |
+|-----------+-------+--------+-------|
+|           |       |        |       |
+#+TBLFM: $4=$2*$3::@>$4=vsum(@2$4..@-1$4)
+
+* Source code
+#+begin_src emacs-lisp
+(defun foo (x)
+  (format "baz: %s" x))
+
+(foo "bar")
+#+end_src
+
+and much more... Take a look at the [[https://orgmode.org/manual][manual]].
+`;
+			  }
+		  };
+		  document.querySelector('#save').onclick = save;
+		  document.querySelector('#export').onclick = do_export;
+
+		  window.onkeydown = async function(event) {
+			  if (event.ctrlKey && event.key == 's') {
+				  event.preventDefault();
+				  await save();
+			  }
+		  };
+	  };
+	</script>
+  </head>
+  <body>
+	<div id="header">
+	  <div id="title">
+		<a href="/">
+		  Doc's Notebook
+		</a>
+	  </div>
+	  <div id="actions">
+		<a href="/logout">Logout</a>
+	  </div>
+	</div>
+	<div class="content">
+	  <noscript>
+		<div id="banner">
+		  This website requires Javascript. We advise you to travel to a year past 1995 to get access to a web browser with javascript engine.
+		</div>
+	  </noscript>
+	  <div id="left">
+		<div id="outersidebar">
+		  <button id="add" alt="Create new file">+</button>
+		  <div id="sidebar">
+		  </div>
+		</div>
+		<div id="editor">
+		  <div class="controls">
+			<button id="save">Save</button>
+			<button id="export">Render</button>
+		  </div>
+		  <textarea disabled></textarea>
+		</div>
+	  </div>
+	  <div id="preview">
+		<iframe id="render">
+		</iframe>
+	  </div>
+	</div>
+  </body>
+</html>

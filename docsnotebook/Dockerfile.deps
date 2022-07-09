@@ -1,0 +1,4 @@
+# This dockerfile contains all apt dependencies of the service
+# Therefore no internet access is needed to rebuild the service
+FROM debian
+RUN apt update && apt install -y emacs-nox elpa-emacsql-sqlite gcc make
